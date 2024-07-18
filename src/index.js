@@ -10,7 +10,9 @@ app.use(express.json());
 
 //Rutas
 const taskRoutes = require("./routes/Tasks.routes");
+const authRoutes = require('./routes/User.routes');
 app.use("/api/tasks", taskRoutes);
+app.use('/api/auth', authRoutes);
 
 //Conexion a MongoDB
 mongoose.connect(process.env.MONGO_URI)
