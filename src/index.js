@@ -30,13 +30,11 @@ app.listen(port, ()=>{
 
 /* 
 
-  Siguientes Pasos
-  1. Autenticación de Usuarios: Implementa registro e inicio de sesión de usuarios usando JWT.
-  2. Autorización: Asegura que solo los usuarios autenticados puedan crear, actualizar y eliminar tareas.
-  3. Validación: Añade validación de entrada de datos para asegurar que los datos enviados a la API son correctos.
-  4. Documentación: Documenta tu API usando Swagger o API Blueprint.
-  5. Tests: Escribe pruebas para tu API usando herramientas como Mocha, Chai, o Jest.
-
-  1. PARA AUTENTICAR USUARIOS: https://www.youtube.com/watch?v=JKa22Z44ap8
+  Siguientes Pasos:
+  1. Autenticación de Usuarios: Implementar registro e inicio de sesión de usuarios usando JWT. **
+  2. Autorización: Asegurar que solo los usuarios autenticados puedan crear, actualizar y eliminar tareas. **
+  3. Validación: Añadir validación de entrada de datos para asegurar que los datos enviados a la API son correctos.
+  4. Documentación: Documentar API usando Swagger o API Blueprint.
+  5. Tests: Escribir pruebas (Tests) usando herramientas como Mocha, Chai, o Jest.
 
 */

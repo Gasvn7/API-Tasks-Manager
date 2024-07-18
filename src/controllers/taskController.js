@@ -3,9 +3,8 @@ const Task = require('../models/Tasks');
 exports.createTask = async (req,res)=>{
   try{
     const task = new Task({
-      title: req.body.title,
-      description: req.body.description,
-      userId: req.body.userId
+      ...req.body,
+      userId: req.user._id // Asociar tarea a usuario
     });
 
     await task.save();
@@ -18,7 +17,11 @@ exports.createTask = async (req,res)=>{
 
 exports.getAllTasks = async (req,res)=>{
   try {
-    const tasks = await Task.find({});
+    const tasks = await Task.find({ userId: req.user._id });
+
+    if(!tasks.length){
+      return res.send("No tienes tareas. Crea nuevas tareas!");
+    }
 
     res.send(tasks);
   } catch (error) {
@@ -27,8 +30,11 @@ exports.getAllTasks = async (req,res)=>{
 }
 
 exports.getTaskById = async (req,res)=>{
+  const _id = req.params.id;
+
   try {
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findById({ _id, userId: req.user._id });
+
     if(!task){
       return res.status(404).send();
     }
@@ -40,13 +46,24 @@ exports.getTaskById = async (req,res)=>{
 }
 
 exports.updateTask = async (req,res)=>{
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ['title', 'description', 'completed'];
+  const isValidOperation = updates.every((update)=> allowedUpdates.includes(update));
+
+  if(!isValidOperation){
+    return res.status(400).send({ error: 'Actualizacion evitada, no está permitida.' });
+  }
+
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const task = await Task.findOne({ _id: req.params.id, userId: req.user._id });
+
     if(!task){
       return res.status(404).send();
     }
 
-    res.send(task);
+    updates.forEach((update) => (task[update] = req.body[update]));
+    await task.save();
+    res.status(200).send(task);
   } catch (error) {
     res.status(400).send(error);
   }
@@ -54,12 +71,13 @@ exports.updateTask = async (req,res)=>{
 
 exports.deleteTask = async (req,res)=>{
   try {
-    const task = await Task.findByIdAndDelete(req.params.id);
+    const task = await Task.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
+
     if(!task){
       return res.status(404).send();
     }
     
-    res.send(task);
+    res.status(200).send(task);
   } catch (error) {
     res.status(500).send(error);
   }
