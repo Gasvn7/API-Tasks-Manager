@@ -4,6 +4,13 @@ const bcrypt = require('bcryptjs');
 exports.singup = async (req,res) => {
   const user = new User(req.body);
   try {
+    const { email } = req.body;
+    const existingUser = await User.findOne({ email });
+
+    if(existingUser){
+      return res.send({ error: 'Este email ya se encuentra registrado.' });
+    }
+
     await user.save();
     const token = await user.generateAuthToken();
     res.status(201).send({ user, token });
